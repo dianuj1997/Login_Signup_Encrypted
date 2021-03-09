@@ -111,7 +111,7 @@ class _ResetFormState extends State<ResetForm> {
 
               Padding(
                   padding: EdgeInsets.only(top: _minpad, bottom: _minpad),
-                  child: Expanded(
+
                     child: SizedBox(
                         width: 200.0,
                         height: 50.0,
@@ -132,7 +132,7 @@ class _ResetFormState extends State<ResetForm> {
                             ));
                           },
                           elevation: 20.0,
-                        )),)),
+                        )),),
               //
 
             ],

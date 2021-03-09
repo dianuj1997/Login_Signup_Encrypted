@@ -115,7 +115,7 @@ class _VerifyFormState extends State<VerifyForm>
 
               Padding(
                   padding: EdgeInsets.only(top: _minpad,bottom: _minpad),
-                  child:Expanded(
+                  // child:Expanded(
                     child:SizedBox(
                         width: 200.0,
                         height: 50.0,
@@ -133,7 +133,7 @@ class _VerifyFormState extends State<VerifyForm>
                             ));
                           },
                           elevation: 20.0,
-                        )),)),
+                        )),),
               //
 
             ],

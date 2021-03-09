@@ -5,9 +5,14 @@ import 'package:flutter_login_register_2/verify_phone.dart';
 import 'package:flutter_login_register_2/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
+import 'dart:math';
+import 'dart:convert';
+
+import 'package:flutter_string_encryption/flutter_string_encryption.dart';
 
 
 class RegForm extends StatefulWidget
@@ -29,6 +34,21 @@ class _RegFormState extends State<RegForm>
   final _minpad=5.0;
   var _currentCat='Citizen';
   var _cat=['Citizen','Health Personal','Policy Maker'];
+  final myController1 = TextEditingController();
+  final myController5 = TextEditingController();
+  final myController2 = TextEditingController();
+  final myController3 = TextEditingController();
+  final myController4 = TextEditingController();
+
+  final cryptor = new PlatformStringCryptor();
+
+
+  // @override
+  // void dispose() {
+  //   // Clean up the controller when the widget is disposed.
+  //   myController1.dispose();
+  //   super.dispose();
+  // }
   @override
   Widget build(BuildContext context) {
     //TextStyle textStyle=Theme.of(context).textTheme.title;
@@ -60,6 +80,7 @@ class _RegFormState extends State<RegForm>
               Padding(
                   padding: EdgeInsets.only(top:_minpad,bottom: _minpad),
                   child:TextField(
+                    controller: myController1,
                     keyboardType: TextInputType.name,
                     decoration: InputDecoration(
                         labelText: 'Full Name',
@@ -83,9 +104,11 @@ class _RegFormState extends State<RegForm>
                   child:Row(children: <Widget>[
 
                     Expanded(
-                      child: Padding(
+                      child:Container(
+                      // child: Padding(
                           padding: EdgeInsets.only(top:_minpad,bottom: _minpad),
                           child:TextField(
+                            controller: myController2,
                             keyboardType: TextInputType.emailAddress,
                             decoration: InputDecoration(
                                 labelText: 'Email',
@@ -97,7 +120,7 @@ class _RegFormState extends State<RegForm>
                     Container(width: _minpad*2,),
                     Container(
                         width: _minpad*30,
-                        child:Expanded(
+                        // child:Expanded(
                             child:DropdownButton<String>(
                                 hint: Text('Category'),
                                 items:_cat.map((String value){
@@ -113,7 +136,7 @@ class _RegFormState extends State<RegForm>
                                   _onDroDownItemSelected(newValueSelected);
                                 }
 
-                            )))
+                            ))
                   ],)),
               Padding(
                   padding:EdgeInsets.only(top:_minpad,bottom: _minpad),
@@ -121,9 +144,10 @@ class _RegFormState extends State<RegForm>
                   child:Row(children: <Widget>[
 
                     Expanded(
-                      child: Padding(
+                      child:Container(
                           padding: EdgeInsets.only(top:_minpad,bottom: _minpad),
                           child:TextField(
+                            controller: myController3,
                             keyboardType: TextInputType.phone,
                             decoration: InputDecoration(
                                 labelText: 'Phone Number',
@@ -133,23 +157,26 @@ class _RegFormState extends State<RegForm>
                           )),),
 
                     Container(width: _minpad*2,),
-                    Container(
-                        width: _minpad*20,
-                        child:Expanded(
-                          child:Padding(
+                    // Container(
+                    //     width: _minpad*20,
+                    //     child:
+                        Expanded(
+                          child:Container(
                               padding: EdgeInsets.only(top:_minpad,bottom: _minpad),
                               child:TextField(
+                                controller: myController4,
                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                     labelText: 'Age',
                                     hintText: 'XX',
                                     border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(5.0))),
-                              )),))
+                              )),)
                   ],)),
               Padding(
                   padding: EdgeInsets.only(top:_minpad,bottom: _minpad),
                   child:TextField(
+                    controller: myController5,
                     keyboardType: TextInputType.visiblePassword,
                     decoration: InputDecoration(
                         labelText: 'New Password',
@@ -162,7 +189,6 @@ class _RegFormState extends State<RegForm>
 
               Padding(
                   padding: EdgeInsets.only(top: _minpad,bottom: _minpad),
-                  child:Expanded(
                     child:SizedBox(
                         width: 200.0,
                         height: 50.0,
@@ -171,10 +197,43 @@ class _RegFormState extends State<RegForm>
                           textColor: Theme.of(context).primaryColorLight,
                           child:Text('Register'),
                           onPressed: ()  async{
-                            _read();
+                            //_read();
+
+
+                            //Gneration of key
+                            final String k1 = await cryptor.generateRandomKey();
+                            final String k2 = await cryptor.generateRandomKey();
+                            final String k3 = await cryptor.generateRandomKey();
+                            final String k4 = await cryptor.generateRandomKey();
+                            final String k5 = await cryptor.generateRandomKey();
+                            final String k6 = await cryptor.generateRandomKey();
+                            //Encryption
+                            final String encrypted1 = await cryptor.encrypt(myController1.text, k1);
+                            final String encrypted2 = await cryptor.encrypt(myController2.text, k2);
+                            final String encrypted3 = await cryptor.encrypt(_currentCat, k3);
+                            final String encrypted4 = await cryptor.encrypt(myController3.text, k4);
+                            final String encrypted5 = await cryptor.encrypt(myController4.text, k5);
+                            final String encrypted6 = await cryptor.encrypt(myController5.text, k6);
+                            //Decryption
+                            // final String F1 = await cryptor.decrypt(encrypted1, k1);
+                            // final String F2 = await cryptor.decrypt(encrypted2, k2);
+                            // final String F3 = await cryptor.decrypt(encrypted3, k3);
+                            // final String F4 = await cryptor.decrypt(encrypted4, k4);
+                            // final String F5 = await cryptor.decrypt(encrypted5, k5);
+                            // final String F6 = await cryptor.decrypt(encrypted6, k6);
+
+                            final String F1 = encrypted1;
+                            final String F2 = encrypted2;
+                            final String F3 = encrypted3;
+                            final String F4 = encrypted4;
+                            final String F5 = encrypted5;
+                            final String F6 = encrypted6;
+
+
+                            _write("\n"+"Name:"+F1+"\n"+"Email:"+F2+"\n"+"Category:"+F3+"\n"+"Phone#:"+F4+"\n"+"Age:"+F5+"\n"+"Password:"+F6+"\n");
                             bool x = await _getBoolValuesSF();
 
-                            //debugPrint("Register is pressed: ${x} ");
+                            //debugPrint(myController1.text+"\n"+myController2.text+"\n"+myController3.text+"\n"+myController4.text+myController5.text);
                             if (1==0) {
                               //    if(data.india==0){
                               Navigator.push(context,
@@ -191,10 +250,10 @@ class _RegFormState extends State<RegForm>
                               ));}
                           },
                           elevation: 20.0,
-                        )),)),
+                        )),),
               Padding(
                   padding: EdgeInsets.only(top: _minpad,bottom: _minpad),
-                  child:Expanded(
+
                       child:RaisedButton(
                         child:Text('Login'),
                         onPressed: ()
@@ -214,7 +273,7 @@ class _RegFormState extends State<RegForm>
 
                         },
                         elevation: 20.0,
-                      ))),
+                      )),
 
             ],
           )
@@ -250,7 +309,7 @@ Future<String> _read() async {
     final Directory directory = await getApplicationDocumentsDirectory();
     final File file = File('${directory.path}/my_file.txt');
     text = await file.readAsString();
-    debugPrint("A file has been read");
+    debugPrint("A file has been read at ${directory.path}");
   } catch (e) {
     debugPrint("Couldn't read file");
   }
@@ -261,4 +320,10 @@ Future<String> get _localPath async {
   final directory = await getApplicationDocumentsDirectory();
 
   return directory.path;
+}
+_write(String text) async {
+  final Directory directory = await getApplicationDocumentsDirectory();
+  final File file = File('${directory.path}/my_file.txt');
+  await file.writeAsString(text);
+  debugPrint("A file with new content,i.e. ${text} has been stored at ${directory.path}");
 }

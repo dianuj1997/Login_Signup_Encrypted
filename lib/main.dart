@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_login_register_2/registration.dart';
 import 'package:flutter_login_register_2/main_page.dart';
 import 'package:flutter_login_register_2/forgot_email.dart';
+import 'package:flutter_string_encryption/flutter_string_encryption.dart';
 void main()
 {
   runApp(
@@ -21,6 +22,7 @@ void main()
 
 class LoginForm extends StatefulWidget
 {
+
   @override
   State<StatefulWidget> createState() {
     return _LoginFormState();
@@ -29,6 +31,9 @@ class LoginForm extends StatefulWidget
 }
 class _LoginFormState extends State<LoginForm>
 {
+  final cryptor = new PlatformStringCryptor();
+  final myController1 = TextEditingController();
+  final myController2 = TextEditingController();
   final _minpad=5.0;
   @override
   Widget build(BuildContext context) {
@@ -45,7 +50,7 @@ class _LoginFormState extends State<LoginForm>
             children: <Widget>[
               getImageAsset(),
               Padding(
-                  padding:EdgeInsets.only(top:_minpad,bottom: _minpad*10),
+                  padding:EdgeInsets.only(top:_minpad,bottom: _minpad*1),
                   child:Text(
                     "Login",
                     textDirection: TextDirection.ltr,
@@ -60,6 +65,7 @@ class _LoginFormState extends State<LoginForm>
               Padding(
                   padding: EdgeInsets.only(top:_minpad,bottom: _minpad),
                   child:TextField(
+                    controller: myController1,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
                         labelText: 'Email',
@@ -70,6 +76,7 @@ class _LoginFormState extends State<LoginForm>
               Padding(
                   padding: EdgeInsets.only(top:_minpad,bottom: _minpad),
                   child:TextField(
+                    controller: myController2,
                     keyboardType: TextInputType.name,
                     decoration: InputDecoration(
                         labelText: 'Password',
@@ -82,16 +89,29 @@ class _LoginFormState extends State<LoginForm>
 
               Padding(
                   padding: EdgeInsets.only(top: _minpad,bottom: _minpad),
-                  child:Expanded(
-                    child:SizedBox(
-                        width: 200.0,
+                  // child:
+                  // Expanded(
+                    // child:Padding(
+                    //      padding: EdgeInsets.only(top: _minpad,bottom: _minpad),
+                    //   child:
+                    child:ButtonTheme(
+                        minWidth: 200.0,
                         height: 50.0,
                         child:RaisedButton(
                           color: Theme.of(context).primaryColorDark,
                           textColor: Theme.of(context).primaryColorLight,
                           child:Text('Login'),
                           onPressed: ()
-                          {
+                         async {
+                            final String k1 = await cryptor.generateRandomKey();
+                            final String k2 = await cryptor.generateRandomKey();
+
+                            final String encrypted1 = await cryptor.encrypt(myController1.text, k1);
+                            final String encrypted2 = await cryptor.encrypt(myController2.text, k2);
+
+                            final String F1 = encrypted1;
+                            final String F2 = encrypted2;
+
                             debugPrint("Login is pressed");
                             Navigator.push(context,MaterialPageRoute(builder: (context)
                             {
@@ -101,14 +121,19 @@ class _LoginFormState extends State<LoginForm>
 
                           },
                           elevation: 20.0,
-                        )),)),
+                        )),
+                  ),
+
+             // ),
               Padding(
                   padding: EdgeInsets.only(top: _minpad,bottom: _minpad),
-                  child:Expanded(
                       child:RaisedButton(
                         child:Text('Signup'),
                         onPressed: ()
                         {
+
+
+
                           debugPrint("Signup is pressed");
                           Navigator.push(context,MaterialPageRoute(builder: (context)
                           {
@@ -117,7 +142,7 @@ class _LoginFormState extends State<LoginForm>
                           ));
                         },
                         elevation: 20.0,
-                      ))),
+                      )),
               Padding(
                 padding:EdgeInsets.only(top: _minpad,bottom: _minpad),
                 child: TextButton(

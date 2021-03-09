@@ -40,7 +40,7 @@ class _MainFormState extends State<MainForm>
 
               Padding(
                   padding: EdgeInsets.only(top: _minpad,bottom: _minpad),
-                  child:Expanded(
+                  // child:Expanded(
                       child:RaisedButton(
                         color: Theme.of(context).primaryColorDark,
                         textColor: Theme.of(context).primaryColorLight,
@@ -62,7 +62,7 @@ class _MainFormState extends State<MainForm>
                           ));
                         },
                         elevation: 20.0,
-                      ))),
+                      )),
 
             ],
           )

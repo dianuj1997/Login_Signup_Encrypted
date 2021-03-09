@@ -111,7 +111,7 @@ class _ForgotFormState extends State<ForgotForm> {
 
               Padding(
                   padding: EdgeInsets.only(top: _minpad, bottom: _minpad),
-                  child: Expanded(
+                  // child: Expanded(
                     child: SizedBox(
                         width: 200.0,
                         height: 50.0,
@@ -132,7 +132,7 @@ class _ForgotFormState extends State<ForgotForm> {
                             ));
                           },
                           elevation: 20.0,
-                        )),)),
+                        )),),
               //
 
             ],

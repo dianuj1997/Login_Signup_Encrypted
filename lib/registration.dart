@@ -18,10 +18,13 @@ import 'package:ext_storage/ext_storage.dart';
 import 'dart:io';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:csv/csv.dart';
+
+//************************************************************************************
 final imgUrl =
     "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/csv/dummy.csv";
 
 var dio = Dio();
+//***********************************************************************************
 
 class RegForm extends StatefulWidget {
   @override
@@ -286,41 +289,57 @@ class _RegFormState extends State<RegForm> {
                       child: Text('Register'),
                       onPressed: () async {
                         //_read();
-
+                        //KEY GENERATION: password of user will be used to generate a random key, in combination with a salt. We have to store salt locally on phone, while password (in original form)
+                        //will be stored on server database. In a nutshell, on database, all credentials, except passoword, we be stored on server in encrypted (hased) form
+                        //while, a salt be placed securely and locally on smartphones memory. Atleast this way, we can assure that the same key is generated when logging in followed by a signup
+                        final password_of_user = myController5.text;
                         //Gneration of key
-                        final String k1 = await cryptor.generateRandomKey();
-                        final String k2 = await cryptor.generateRandomKey();
-                        final String k3 = await cryptor.generateRandomKey();
-                        final String k4 = await cryptor.generateRandomKey();
-                        final String k5 = await cryptor.generateRandomKey();
-                        final String k6 = await cryptor.generateRandomKey();
-                        //Encryption
-                        final String encrypted1 =
-                            await cryptor.encrypt(myController1.text, k1);
-                        final String encrypted2 =
-                            await cryptor.encrypt(myController2.text, k2);
-                        final String encrypted3 =
-                            await cryptor.encrypt(_currentCat, k3);
-                        final String encrypted4 =
-                            await cryptor.encrypt(myController3.text, k4);
-                        final String encrypted5 =
-                            await cryptor.encrypt(myController4.text, k5);
-                        final String encrypted6 =
-                            await cryptor.encrypt(myController5.text, k6);
-                        //Decryption
-                        // final String F1 = await cryptor.decrypt(encrypted1, k1);
-                        // final String F2 = await cryptor.decrypt(encrypted2, k2);
-                        // final String F3 = await cryptor.decrypt(encrypted3, k3);
-                        // final String F4 = await cryptor.decrypt(encrypted4, k4);
-                        // final String F5 = await cryptor.decrypt(encrypted5, k5);
-                        // final String F6 = await cryptor.decrypt(encrypted6, k6);
 
-                        final String F1 = encrypted1;
-                        final String F2 = encrypted2;
-                        final String F3 = encrypted3;
-                        final String F4 = encrypted4;
-                        final String F5 = encrypted5;
-                        final String F6 = encrypted6;
+
+                        final String salt_name = await cryptor.generateSalt();
+                        final String k_name = await cryptor.generateKeyFromPassword(password_of_user , salt_name);
+
+                        final String salt_email = await cryptor.generateSalt();
+                        final String k_email = await cryptor.generateKeyFromPassword(password_of_user , salt_email);
+
+                        final String salt_category = await cryptor.generateSalt();
+                        final String k_category = await cryptor.generateKeyFromPassword(password_of_user , salt_category);
+
+                        final String salt_phonenumber = await cryptor.generateSalt();
+                        final String k_phonenumber = await cryptor.generateKeyFromPassword(password_of_user , salt_phonenumber);
+
+                        final String salt_age = await cryptor.generateSalt();
+                        final String k_age = await cryptor.generateKeyFromPassword(password_of_user , salt_age);
+
+                        //Encryption
+                        final String encrypted_name =
+                            await cryptor.encrypt(myController1.text, k_name);
+                        final String encrypted_email =
+                            await cryptor.encrypt(myController2.text, k_email);
+                        final String encrypted_category =
+                            await cryptor.encrypt(_currentCat, k_category);
+                        final String encrypted_phonenumber =
+                            await cryptor.encrypt(myController3.text, k_phonenumber);
+                        final String encrypted_age =
+                            await cryptor.encrypt(myController4.text, k_age);
+
+
+                        final String F1 = encrypted_name;
+                        final String F2 = encrypted_email;
+                        final String F3 = encrypted_category;
+                        final String F4 = encrypted_phonenumber;
+                        final String F5 = encrypted_age;
+
+                        //Decryption: Please note that we will request user to access the salt stored. Form that, in combination with their password, we will generate key, which will generate the decrypted strings.
+                        // final String G1 = await cryptor.decrypt(F1, k_name);
+                        // final String G2 = await cryptor.decrypt(F2, k_email);
+                        // final String G3 = await cryptor.decrypt(F3, k_category);
+                        // final String G4 = await cryptor.decrypt(F4, k_phonenumber);
+                        // final String G5 = await cryptor.decrypt(F5, k_age);
+
+
+
+                        final String F6=password_of_user;
 
                         String currentdat="\n" +
                             "Name:" +

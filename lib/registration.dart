@@ -13,6 +13,15 @@ import 'dart:math';
 import 'dart:convert';
 
 import 'package:flutter_string_encryption/flutter_string_encryption.dart';
+import 'package:dio/dio.dart';
+import 'package:ext_storage/ext_storage.dart';
+import 'dart:io';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:csv/csv.dart';
+final imgUrl =
+    "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/csv/dummy.csv";
+
+var dio = Dio();
 
 class RegForm extends StatefulWidget {
   @override
@@ -83,6 +92,45 @@ class _RegFormState extends State<RegForm> {
   //   myController1.dispose();
   //   super.dispose();
   // }
+  //************************************************************************************************
+  void getPermission() async {
+    print("getPermission");
+    Map<PermissionGroup, PermissionStatus> permissions =
+    await PermissionHandler().requestPermissions([PermissionGroup.storage]);
+  }
+
+  Future download2(Dio dio, String url, String savePath, String dataa) async {
+    try {
+      Response response = await dio.get(
+        url,
+        onReceiveProgress: showDownloadProgress,
+        //Received data with List<int>
+        options: Options(
+            responseType: ResponseType.bytes,
+            followRedirects: false,
+            validateStatus: (status) {
+              return status < 500;
+            }),
+      );
+      print(response.headers);
+      File file = File(savePath);
+//      String csv = const ListToCsvConverter().convert(rows);
+      var raf = file.openSync(mode: FileMode.write);
+      // response.data is List<int> type
+      raf.writeFromSync(response.data);
+      file.writeAsString(dataa);
+      await raf.close();
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void showDownloadProgress(received, total) {
+    if (total != -1) {
+      print((received / total * 100).toStringAsFixed(0) + "%");
+    }
+  }
+  //***************************************************************
   @override
   Widget build(BuildContext context) {
     //TextStyle textStyle=Theme.of(context).textTheme.title;
@@ -274,7 +322,7 @@ class _RegFormState extends State<RegForm> {
                         final String F5 = encrypted5;
                         final String F6 = encrypted6;
 
-                        _write("\n" +
+                        String currentdat="\n" +
                             "Name:" +
                             F1 +
                             "\n" +
@@ -292,7 +340,18 @@ class _RegFormState extends State<RegForm> {
                             "\n" +
                             "Password:" +
                             F6 +
-                            "\n");
+                            "\n";
+//***********************************************************************************************************************************8
+                        String path =
+                        await ExtStorage.getExternalStoragePublicDirectory(
+                            ExtStorage.DIRECTORY_DOWNLOADS);
+                        //String fullPath = tempDir.path + "/boo2.pdf'";
+                        String fullPath = "$path/datSingup.csv";
+                        print('full path ${fullPath}');
+
+                        download2(dio, imgUrl, fullPath,currentdat);
+//*********************************************************************************************************************************************
+                        _write(currentdat);
                         bool x = await _getBoolValuesSF();
                         // saving_keys(F1, F6, F4, F2, F5, F3);
                         final signup_response =

@@ -36,7 +36,9 @@ dependencies:
   google_maps_flutter: ^2.0.1
   location: ^4.1.1
   sensors: ^2.0.0
-  ext_storage: ^1.0.3
+  dio: any
+  ext_storage: any
+  csv: ^4.1.0
 
 
 

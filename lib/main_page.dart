@@ -48,10 +48,10 @@ class _MainFormState extends State<MainForm>
                         onPressed: ()
                          {
                            _write("");
-                           _read();
-                           deleteFile();
+                          // _read();
+                          // deleteFile();
                            // _read();
-                          _addBoolToSF();
+                          //_addBoolToSF();
                           //prefs.remove('counter');
                           //debugPrint('Logout is Pressed');
                           Navigator.push(context,MaterialPageRoute(builder: (context)
@@ -81,7 +81,7 @@ void _addBoolToSF() async {
 
 _write(String text) async {
   final Directory directory = await getApplicationDocumentsDirectory();
-  final File file = File('${directory.path}/my_file.txt');
+  final File file = File('${directory.path}/my_file_detector.txt');
   await file.writeAsString(text);
 }
 Future<String> _read() async {
